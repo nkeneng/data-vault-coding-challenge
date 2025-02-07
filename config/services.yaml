@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    allowed_api_keys:
+        - 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
 
 services:
     # default configuration for services in *this* file
@@ -20,5 +22,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Security\ApiTokenAuthenticator:
+        arguments:
+            $allowedApiKeys: '%allowed_api_keys%'
+        tags:
+            - { name: 'security.authenticator' }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
