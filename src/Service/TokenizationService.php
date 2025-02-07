@@ -2,17 +2,30 @@
 
 namespace App\Service;
 
+use App\Entity\Data;
+use App\Repository\DataRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
 class TokenizationService
 {
-    private array $tokenMap = [];
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EncryptionService $encryptionService,
+        private readonly DataRepository $dataRepository
+    ) {}
 
     public function tokenize(array $data): array
     {
         foreach ($data as $field => $value) {
             $token = bin2hex(random_bytes(8));
+            $encryptedValue = $this->encryptionService->encrypt($value);
+            $this->entityManager->persist((new Data())
+                    ->setToken($token)
+                    ->setEncryptedValue($encryptedValue)
+            );
             $tokenizedData[$field] = $token;
-            $this->tokenMap[$token] = $value;
         }
+        $this->entityManager->flush();
         return $tokenizedData;
     }
 
@@ -20,10 +33,12 @@ class TokenizationService
     {
         $detokenizedData = [];
         foreach ($data as $field => $token) {
-            if (isset($this->tokenMap[$token])) {
+            $data = $this->dataRepository->findOneBy(['token' => $token]);
+            if ($data) {
+                $decryptedValue = $this->encryptionService->decrypt($data->getEncryptedValue());
                 $detokenizedData[$field] = [
                     'found' => true,
-                    'value' => $this->tokenMap[$token],
+                    'value' => $decryptedValue,
                 ];
             } else {
                 $detokenizedData[$field] = [
