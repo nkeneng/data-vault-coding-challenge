@@ -12,6 +12,21 @@ class TokenizationController extends AbstractController
 {
     public function __construct(private readonly TokenizationService $tokenizationService) {}
 
+    /**
+     * Tokenizes and encrypts the provided data.
+     *
+     * Expected JSON payload:
+     * {
+     *   "id": "req-123",
+     *   "data": {
+     *     "field1": "value1",
+     *     "field2": "value2",
+     *     "fieldn": "valuen"
+     *   }
+     * }
+     *
+     * @return JsonResponse JSON with tokenized data.
+     */
     #[Route('/tokenize', name: 'app_tokenize', methods: ['POST'])]
     public function tokenize(Request $request): JsonResponse
     {
@@ -30,6 +45,21 @@ class TokenizationController extends AbstractController
         return new JsonResponse($responseData, 201);
     }
 
+    /**
+     * Detokenizes the provided tokens by retrieving and decrypting the associated data.
+     *
+     * Expected JSON payload:
+     * {
+     *   "id": "req-33445",
+     *   "data": {
+     *     "field1": "token1",
+     *     "field2": "token2",
+     *     "field3": "token3"
+     *   }
+     * }
+     *
+     * @return JsonResponse JSON with detokenized data.
+     */
     #[Route('/detokenize', name: 'app_detokenize', methods: ['POST'])]
     public function detokenize(Request $request): JsonResponse
     {
