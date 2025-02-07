@@ -5,14 +5,8 @@
 - [Features](#features)
 - [Architecture Overview](#architecture-overview)
 - [Installation](#installation)
-- [Configuration](#configuration)
-- [Database Setup](#database-setup)
 - [API Endpoints](#api-endpoints)
 - [Authentication](#authentication)
-- [Logging and Error Handling](#logging-and-error-handling)
-- [Testing](#testing)
-- [Future Enhancements](#future-enhancements)
-- [License](#license)
 
 ## Features
 
@@ -59,7 +53,7 @@ This modular design ensures that each component is testable, maintainable, and s
 
 - PHP 8.0 or higher
 - Composer
-- A supported database (e.g., MySQL, PostgreSQL, SQLite)
+- An Sqlite database
 - [Symfony CLI](https://symfony.com/download) (optional but recommended)
 
 ### Steps
@@ -67,7 +61,7 @@ This modular design ensures that each component is testable, maintainable, and s
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/yourusername/data-privacy-vault.git
+   git clone https://github.com/nkeneng/data-privacy-vault.git
    cd data-privacy-vault
    ```
 
@@ -79,11 +73,11 @@ composer install
 
 3. **Database Setup:**
 ```bash
-php bin/console doctrine:database:create
+php bin/console make:migration
 php bin/console doctrine:migrations:migrate
 ```
 
-### API Endpoints
+## API Endpoints
 
 **Tokenize**
 * endpoint: /tokenize
@@ -147,7 +141,7 @@ php bin/console doctrine:migrations:migrate
   }
 }
 ```
-### Authentication
+## Authentication
 All requests to the API endpoints must include an X-AUTH-TOKEN HTTP header with one of the allowed API keys. The API key is hashed and compared against pre-computed hashes to authenticate service-to-service calls.
 * Example Header
 ```http
